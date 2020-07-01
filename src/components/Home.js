@@ -11,10 +11,12 @@ const Home = ({ history }) => {
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <input type="text" placeholder='Enter country' value={country} onChange={onChange} />
-      <button disabled={isDisabled}>Submit</button>
-    </form>
+    <div className='container'>
+      <form onSubmit={onSubmit}>
+        <input type="text" placeholder='Enter country' value={country} onChange={onChange} />
+        <button disabled={isDisabled}>Submit</button>
+      </form>
+    </div>
   )
 }
 

@@ -10,13 +10,21 @@ const CountryProfile = ({ match, history }) => {
   const onGetCountryDetails = async () => {
     const { name } = match.params
     if (typeof name != 'string' || name.length < 1) return history.push('/')
-    const countryRes = await axios.get(`https://restcountries.eu/rest/v2/name/${name}`)
-    changeCountry(countryRes.data[0])
+    try {
+      const countryRes = await axios.get(`https://restcountries.eu/rest/v2/name/${name}`)
+      changeCountry(countryRes.data[0])
+    } catch {
+      history.push('/404')
+    }
   }
 
   const onGetWeather = async () => {
-    const weatherRes = await axios.get(`http://api.weatherstack.com/forecast?access_key=3501c66bb7b90eb44e2305c868eb8b71&query=${countryInfo.capital}`)
-    changeWeather(weatherRes.data.current)
+    try {
+      const weatherRes = await axios.get(`http://api.weatherstack.com/forecast?access_key=3501c66bb7b90eb44e2305c868eb8b71&query=${countryInfo.capital}`)
+      changeWeather(weatherRes.data.current)
+    } catch {
+      alert('Failed to fetch weather')
+    }
   }
 
   useEffect(() => {
@@ -27,7 +35,7 @@ const CountryProfile = ({ match, history }) => {
 
 
   return (
-    <div>
+    <div className='container'>
       <h1>Country: {countryInfo.name}</h1>
       <h1>Capital: {countryInfo.capital}</h1>
       <h1>Population: {countryInfo.population}</h1>
