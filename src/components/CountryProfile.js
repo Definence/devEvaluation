@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom'
 const CountryProfile = ({ match, history }) => {
   const [countryInfo, changeCountry] = useState(null)
   const [weather, changeWeather] = useState({})
-  const { temperature, weather_icons, wind_speed, precip } = weather
 
   const onGetCountryDetails = async () => {
     const { name } = match.params
@@ -19,17 +18,17 @@ const CountryProfile = ({ match, history }) => {
   }
 
   const onGetWeather = async () => {
-    try {
-      const weatherRes = await axios.get(`http://api.weatherstack.com/forecast?access_key=3501c66bb7b90eb44e2305c868eb8b71&query=${countryInfo.capital}`)
-      changeWeather(weatherRes.data.current)
-    } catch {
+    const weatherRes = await axios.get(`http://api.weatherstack.com/forecast?access_key=3501c66bb7b90eb44e2305c868eb8b71&query=${countryInfo.capital}`)
+    if (weatherRes.data.error) {
       alert('Failed to fetch weather')
+    } else {
+      changeWeather(weatherRes.data.current)
     }
   }
 
   useEffect(() => {
-    onGetCountryDetails()
-  }, [])
+    !countryInfo && onGetCountryDetails()
+  })
 
   if (!countryInfo) return <h1>Loading...</h1>
 
@@ -47,10 +46,10 @@ const CountryProfile = ({ match, history }) => {
       {
         Object.keys(weather).length > 0 && (
           <>
-            <h1>Temperature: {temperature}</h1>
-            {weather_icons.map((icon, i) => <img key={i} alt='weather' src={icon} />)}
-            <h1>Wind speed: {wind_speed}</h1>
-            <h1>Precip: {precip}</h1>
+            <h1>Temperature: {weather.temperature}</h1>
+            {weather.weather_icons.map((icon, i) => <img key={i} alt='weather' src={icon} />)}
+            <h1>Wind speed: {weather.wind_speed}</h1>
+            <h1>Precip: {weather.precip}</h1>
           </>
         )
       }
